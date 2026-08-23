@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Passive Income Progress Dashboard</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --panel:#111827;
+    --panel2:#1f2937;
+    --muted:#94a3b8;
+    --text:#e5e7eb;
+    --accent:#22c55e;
+    --accent2:#38bdf8;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --line:#334155;
+    --card:#111827;
+    --chip:#172554;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#020617,#0f172a 40%,#111827);color:var(--text);min-height:100vh}
+  header{padding:22px 28px;border-bottom:1px solid var(--line);background:rgba(2,6,23,.78);position:sticky;top:0;z-index:10;backdrop-filter:blur(10px)}
+  h1{margin:0;font-size:24px;letter-spacing:.2px}.sub{color:var(--muted);font-size:13px;margin-top:6px}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.tabBtn{border:1px solid var(--line);background:#0b1220;color:var(--text);padding:10px 13px;border-radius:12px;cursor:pointer;font-weight:650}.tabBtn.active{background:var(--accent);border-color:var(--accent);color:#052e16}.wrap{padding:24px 28px;max-width:1500px;margin:auto}.tab{display:none}.tab.active{display:block}.grid{display:grid;gap:16px}.grid.cols4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:rgba(17,24,39,.92);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}.metric{font-size:30px;font-weight:800;margin-top:6px}.label{color:var(--muted);font-size:13px}.bar{height:12px;background:#020617;border:1px solid var(--line);border-radius:999px;overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#0b1220;border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}.btn{border:0;border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:700;color:#06121f;background:var(--accent)}.btn.secondary{background:#0b1220;color:var(--text);border:1px solid var(--line)}.btn.warn{background:var(--warning);color:#111827}.btn.danger{background:var(--danger);color:white}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}input,select,textarea{width:100%;background:#020617;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:10px 11px;font:inherit}textarea{min-height:90px;resize:vertical}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}tr:hover td{background:rgba(56,189,248,.04)}.small{font-size:12px;color:var(--muted)}.sectionTitle{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 14px}.phase{border-left:5px solid var(--accent2)}.phase.done{border-left-color:var(--accent)}.phase.risk{border-left-color:var(--warning)}.phase.late{border-left-color:var(--danger)}.gantt{overflow:auto;padding-bottom:10px}.ganttRow{display:grid;grid-template-columns:260px 1fr;gap:12px;margin:8px 0;align-items:center}.ganttLabel{font-size:13px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline{height:28px;position:relative;background:#020617;border:1px solid var(--line);border-radius:999px;min-width:780px}.timeline .block{position:absolute;height:100%;border-radius:999px;background:linear-gradient(90deg,#2563eb,#22c55e);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;min-width:22px;overflow:hidden}.timeline .today{position:absolute;top:-4px;bottom:-4px;width:2px;background:#f97316}.calendarGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day{min-height:116px;background:#0b1220;border:1px solid var(--line);border-radius:14px;padding:8px;overflow:hidden}.day .dnum{font-size:12px;color:var(--muted);margin-bottom:5px}.event{font-size:11px;border-radius:8px;padding:5px 6px;margin:4px 0;background:#172554;color:#dbeafe}.event.done{background:#064e3b;color:#dcfce7}.event.late{background:#7f1d1d;color:#fee2e2}.kpiInput{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin:8px 0}.ideaCard{border:1px solid var(--line);border-radius:14px;padding:12px;background:#0b1220}.score{font-weight:800;font-size:22px}.footer{padding:30px;color:var(--muted);font-size:12px;text-align:center}.notice{border:1px dashed #64748b;background:rgba(15,23,42,.8);border-radius:16px;padding:14px;color:#cbd5e1}.hidden{display:none!important}.checklist label{display:flex;gap:10px;align-items:flex-start;margin:9px 0;color:#cbd5e1}.checklist input{width:auto;margin-top:3px}.chartBox{height:220px}.money{font-variant-numeric:tabular-nums}@media(max-width:1000px){.grid.cols4,.grid.cols3,.grid.cols2{grid-template-columns:1fr}.ganttRow{grid-template-columns:1fr}.wrap{padding:18px 14px}header{padding:18px 14px}.calendarGrid{grid-template-columns:1fr}.day{min-height:auto}}
+</style>
+</head>
+<body>
+<header>
+  <h1>AI Passive Income Progress Dashboard</h1>
+  <div class="sub">Offline HTML tracker for the research → approval → build → publish → analytics programme. Data is stored in this browser; export backups regularly.</div>
+  <nav id="tabs"></nav>
+</header>
+<main class="wrap">
+  <section id="dashboard" class="tab active"></section>
+  <section id="calendar" class="tab"></section>
+  <section id="tasks" class="tab"></section>
+  <section id="income" class="tab"></section>
+  <section id="ideas" class="tab"></section>
+  <section id="content" class="tab"></section>
+  <section id="crypto" class="tab"></section>
+  <section id="settings" class="tab"></section>
+</main>
+<div class="footer">Local automation dashboard • Single-file HTML • Windows friendly • No external libraries</div>
+<script>
+const STORAGE_KEY='aiPassiveIncomeDashboard.v1';
+const MS_DAY=86400000;
+const today = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+Number(n||0));x.setHours(0,0,0,0);return x};
+const fmt=d=>{if(!d)return''; const x = (d instanceof Date)?d:new Date(d); return x.toISOString().slice(0,10)};
+const parse=s=>{ if(!s)return null; const d=new Date(s+'T00:00:00'); if(isNaN(d)) return null; return d; };
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number(n)||0));
+const currency=n=>'€'+(Number(n)||0).toLocaleString('en-IE',{maximumFractionDigits:0});
+
+const defaultData={
+  meta:{projectName:'Local Automation Dashboard', owner:'Local user', startDate:fmt(today()), monthlyTarget:0, approvalCadence:'As needed', workIntensity:1, lastUpdated:fmt(today())},
+  brief:{
+    targetMonthlyIncome:'', targetDeadline:'', startingBudget:'', weeklyHours:'', riskLevel:'Medium',
+    niches:'',
+    hardRules:'No spam. No platform scraping. No publishing without approval. No copyrighted assets without licence.',
+    approvalMethod:'Dashboard', notes:'Upload your completed Word brief to ChatGPT separately if you want this dashboard tailored to those answers.'
+  },
+  tasks:[
+    {id:'T-001',phase:'Setup',name:'Validate one-click mining startup',start:fmt(today()),duration:1,progress:0,status:'Not started',owner:'Local user',type:'Technical',notes:'Use the Windows validation checklist in the PR.'},
+    {id:'T-002',phase:'Operations',name:'Review mining temperature and power',start:fmt(today()),duration:1,progress:0,status:'Not started',owner:'Local user',type:'Safety',notes:'Stop if operating conditions are unsafe.'}
+  ],
+  income:[
+    {date:fmt(today()),stream:'Crypto mining',revenue:0,cost:0,notes:'Example local record'}
+  ],
+  ideas:[
+    {id:'I-001',title:'Example opportunity',stream:'Local project',buyerPain:3,competitionWeakness:3,productionSpeed:3,expertiseAdvantage:3,monetisation:3,platformRisk:2,status:'Research'}
+  ],
+  content:[
+    {id:'C-001',platform:'Local',title:'Example content item',status:'Idea',due:fmt(today()),notes:'Replace with your own local data.'}
+  ],
+  crypto:{
+    enabled:false,
+    ignoreElectricity:false,
+    bridgeOnline:false,
+    quickMinerRunning:false,
+    excavatorRunning:false,
+    gpuMining:false,
+    gpuDisabled:false,
+    miningState:'OFFLINE',
+    hashrate:null,
+    grossRevenuePerDay:null,
+    electricityEurPerKwh:0,
+    assumedPowerW:150,
+    minimumProfitPerDay:0,
+    maxGpuTempC:78,
+    resumeGpuTempC:70,
+    minerStatus:'Stopped',
+    gpuName:'RTX 2070 SUPER',
+    gpuTempC:null,
+    gpuPowerW:null,
+    gpuUtilPct:null,
+    lastError:null,
+    lastUpdated:'',
+    lastDecision:'Not evaluated',
+    autoIncomeLogging:true,
+    profitabilityProvider:'nicehash_native',
+    profitabilityStatus:'Not refreshed',
+    bestCoin:'',
+    bestAlgorithm:'',
+    bestGrossEurDay:0,
+    profitabilityUpdated:'',
+    profitabilityRows:[],
+    notes:'Local dashboard controls with live bridge and automatic profitability refresh.'
+  }
+};
+let data = load();
+let scheduleCache=[];
+const tabDefs=[['dashboard','Dashboard'],['calendar','Calendar'],['tasks','Tasks'],['income','Income'],['ideas','Ideas'],['content','Content Queue'],['crypto','Crypto Mining'],['settings','Settings']];
+function load(){try{const raw=localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw):structuredClone(defaultData)}catch(e){return structuredClone(defaultData)}}
+function save(){data.meta.lastUpdated=fmt(today());localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function resetData(){if(confirm('Reset dashboard to the default programme? Export a backup first if needed.')){data=structuredClone(defaultData);save();render();}}
+function setTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tabBtn').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelector(`[data-tab="${id}"]`).classList.add('active');if(id==='crypto')syncCryptoStatus();}
+function renderTabs(){document.getElementById('tabs').innerHTML=tabDefs.map(([id,name])=>`<button class="tabBtn ${id==='dashboard'?'active':''}" data-tab="${id}" onclick="setTab('${id}')">${name}</button>`).join('');}
+function scoreIdea(i){return Math.round(((i.buyerPain*25)+(i.competitionWeakness*20)+(i.productionSpeed*15)+(i.expertiseAdvantage*15)+(i.monetisation*15)+((6-i.platformRisk)*10))/5);}
+function getSchedule(){
+  const intensity=clamp(data.meta.workIntensity||1,0.25,3);
+  const start=parse(data.meta.startDate)||today();
+  let cursor=new Date(start);
+  const tdy=today();
+  const tasks=data.tasks.map(t=>({...t, duration:Number(t.duration)||1, progress:clamp(t.progress,0,100)}));
+  const computed=[];
+  for(const t of tasks){
+    const originalStart=parse(t.start)||cursor;
+    if(computed.length===0){ cursor=new Date(originalStart); }
+    let s = new Date(cursor);
+    let adjustedDuration=t.duration;
+    let status=t.status;
+    if(t.progress>=100 || t.status==='Done'){
+      status='Done'; adjustedDuration=Math.max(1,Math.ceil(t.duration*Math.max(0.1, t.progress/100)));
+    } else {
+      const plannedStart = originalStart;
+      const plannedElapsed = Math.max(0, Math.floor((tdy - plannedStart)/MS_DAY));
+      const expected = clamp((plannedElapsed / Math.max(1,t.duration))*100,0,100);
+      const remainingFraction = Math.max(0.01,(100-t.progress)/100);
+      adjustedDuration=Math.max(1,Math.ceil(t.duration*remainingFraction/intensity));
+      if(tdy > s && t.progress < expected){ status='Late'; }
+      if(tdy > s && t.progress>0 && t.progress<100){ s=new Date(tdy); }
+    }
+    const e=addDays(s,adjustedDuration);
+    computed.push({...t,computedStart:fmt(s),computedEnd:fmt(e),computedDuration:adjustedDuration,computedStatus:status});
+    cursor=addDays(e,0);
+  }
+  scheduleCache=computed; return computed;
+}
+function projectStats(){
+  const total=data.tasks.length;
+  const avg=data.tasks.reduce((a,t)=>a+clamp(t.progress,0,100),0)/Math.max(1,total);
+  const done=data.tasks.filter(t=>clamp(t.progress,0,100)>=100||t.status==='Done').length;
+  const sched=getSchedule();
+  const finish=sched.length?sched[sched.length-1].computedEnd:'';
+  const revenue=data.income.reduce((a,x)=>a+Number(x.revenue||0),0);
+  const costs=data.income.reduce((a,x)=>a+Number(x.cost||0),0);
+  const profit=revenue-costs;
+  const liveTasks=sched.filter(t=>t.computedStatus!=='Done').slice(0,3);
+  return {total,avg,done,finish,revenue,costs,profit,liveTasks};
+}
+function renderDashboard(){
+  const s=projectStats();
+  const topIdeas=[...data.ideas].map(i=>({...i,score:scoreIdea(i)})).sort((a,b)=>b.score-a.score).slice(0,5);
+  document.getElementById('dashboard').innerHTML=`
+  <div class="grid cols4">
+    <div class="card"><div class="label">Overall progress</div><div class="metric">${Math.round(s.avg)}%</div><div class="bar"><span style="width:${s.avg}%"></span></div><div class="small">${s.done}/${s.total} tasks completed</div></div>
+    <div class="card"><div class="label">Dynamic finish date</div><div class="metric">${s.finish||'—'}</div><div class="small">Recalculates from progress and work intensity</div></div>
+    <div class="card"><div class="label">Profit tracked</div><div class="metric money">${currency(s.profit)}</div><div class="small">Revenue ${currency(s.revenue)} less costs ${currency(s.costs)}</div></div>
+    <div class="card"><div class="label">Work intensity</div><div class="metric">${data.meta.workIntensity}×</div><input type="range" min="0.25" max="3" step="0.25" value="${data.meta.workIntensity}" onchange="data.meta.workIntensity=this.value;save();render();"><div class="small">Higher = timeline pulls forward</div></div>
+  </div>
+  <div class="grid cols2" style="margin-top:16px">
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Next actions</h2><button class="btn secondary" onclick="setTab('tasks')">Open Tasks</button></div>
+      ${s.liveTasks.map(t=>`<div class="ideaCard" style="margin-bottom:10px"><b>${t.name}</b><div class="small">${t.phase} • ${t.computedStart} → ${t.computedEnd} • ${t.computedStatus}</div><div class="bar" style="margin-top:9px"><span style="width:${t.progress}%"></span></div></div>`).join('') || '<div class="notice">All tasks completed.</div>'}
+    </div>
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Top scored opportunities</h2><button class="btn secondary" onclick="setTab('ideas')">Open Ideas</button></div>
+      ${topIdeas.map(i=>`<div class="ideaCard" style="margin-bottom:10px"><div class="row" style="justify-content:space-between"><b>${i.title}</b><span class="score">${i.score}</span></div><div class="small">${i.stream} • ${i.status}</div></div>`).join('')}
+    </div>
+  </div>
+  <div class="grid cols2" style="margin-top:16px">
+    <div class="card"><div class="sectionTitle"><h2 style="margin:0">Progress chart</h2></div><canvas id="progressChart" class="chartBox"></canvas></div>
+    <div class="card"><div class="sectionTitle"><h2 style="margin:0">Income by stream</h2></div><canvas id="incomeChart" class="chartBox"></canvas></div>
+  </div>`;
+  drawProgressChart(); drawIncomeChart();
+}
+function drawBarChart(canvasId, labels, values){
+  const c=document.getElementById(canvasId); if(!c)return; const parent=c.parentElement; c.width=parent.clientWidth-20; c.height=220; const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height); const max=Math.max(1,...values); const pad=34; const w=(c.width-pad*2)/Math.max(1,values.length);
+  ctx.strokeStyle='#334155'; ctx.fillStyle='#94a3b8'; ctx.font='11px Segoe UI';
+  ctx.beginPath(); ctx.moveTo(pad,10); ctx.lineTo(pad,c.height-pad); ctx.lineTo(c.width-10,c.height-pad); ctx.stroke();
+  values.forEach((v,i)=>{const h=(c.height-pad-20)*(v/max); const x=pad+i*w+8; const y=c.height-pad-h; const grad=ctx.createLinearGradient(0,y,0,c.height-pad); grad.addColorStop(0,'#38bdf8'); grad.addColorStop(1,'#22c55e'); ctx.fillStyle=grad; ctx.fillRect(x,y,Math.max(12,w-16),h); ctx.fillStyle='#e5e7eb'; ctx.fillText(String(Math.round(v)),x,y-5); ctx.fillStyle='#94a3b8'; ctx.save(); ctx.translate(x+5,c.height-8); ctx.rotate(-0.45); ctx.fillText(labels[i].slice(0,18),0,0); ctx.restore();});
+}
+function drawProgressChart(){const phases=[...new Set(data.tasks.map(t=>t.phase))]; const values=phases.map(p=>data.tasks.filter(t=>t.phase===p).reduce((a,t)=>a+Number(t.progress||0),0)/data.tasks.filter(t=>t.phase===p).length); drawBarChart('progressChart',phases.map(p=>p.replace('Phase ', 'P')),values);}
+function drawIncomeChart(){const streams=[...new Set(data.income.map(x=>x.stream))]; const values=streams.map(st=>data.income.filter(x=>x.stream===st).reduce((a,x)=>a+Number(x.revenue||0)-Number(x.cost||0),0)); drawBarChart('incomeChart',streams,values);}
+function renderCalendar(){
+ const sched=getSchedule(); const starts=sched.map(t=>parse(t.computedStart)); const ends=sched.map(t=>parse(t.computedEnd)); const minDate=new Date(Math.min(...starts.map(d=>d.getTime()))); const maxDate=new Date(Math.max(...ends.map(d=>d.getTime())));
+ const tdy=today(); const totalDays=Math.max(1,Math.ceil((maxDate-minDate)/MS_DAY));
+ const gantt=sched.map(t=>{ const s=parse(t.computedStart), e=parse(t.computedEnd); const left=((s-minDate)/MS_DAY)/totalDays*100; const width=Math.max(1,((e-s)/MS_DAY)/totalDays*100); const todayPct=((tdy-minDate)/MS_DAY)/totalDays*100; const cls=t.computedStatus==='Done'?'done':(t.computedStatus==='Late'?'late':''); return `<div class="ganttRow"><div class="ganttLabel">${t.id} — ${t.name}</div><div class="timeline"><div class="block ${cls}" style="left:${left}%;width:${width}%">${t.progress}%</div>${todayPct>=0&&todayPct<=100?`<div class="today" title="Today" style="left:${todayPct}%"></div>`:''}</div></div>`}).join('');
+ document.getElementById('calendar').innerHTML=`<div class="card"><div class="sectionTitle"><h2 style="margin:0">Dynamic timeline</h2><div class="row"><span class="pill">Start ${fmt(minDate)}</span><span class="pill">Finish ${fmt(maxDate)}</span><span class="pill">Intensity ${data.meta.workIntensity}×</span></div></div><div class="notice">How it moves: completed tasks lock in; late/incomplete tasks push the remaining programme out; increasing work intensity compresses the remaining duration.</div><div class="gantt" style="margin-top:16px">${gantt}</div></div><div class="card" style="margin-top:16px"><div class="sectionTitle"><h2 style="margin:0">Calendar view</h2><div class="row"><button class="btn secondary" onclick="changeCalMonth(-1)">Previous</button><span class="pill" id="calMonthLabel"></span><button class="btn secondary" onclick="changeCalMonth(1)">Next</button></div></div><div id="calendarGrid"></div></div>`; renderMonthCalendar();
+}
+let calMonthOffset=0;
+function changeCalMonth(n){calMonthOffset+=n; renderMonthCalendar();}
+function renderMonthCalendar(){
+ const base=today(); const first=new Date(base.getFullYear(), base.getMonth()+calMonthOffset, 1); const month=first.getMonth(), year=first.getFullYear(); const start=new Date(year,month,1-first.getDay()); const label=first.toLocaleString('en-IE',{month:'long',year:'numeric'}); const labelEl=document.getElementById('calMonthLabel'); if(labelEl)labelEl.textContent=label;
+ const sched=getSchedule(); let html='<div class="calendarGrid">'; ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>html+=`<div class="small" style="padding:4px">${d}</div>`);
+ for(let i=0;i<42;i++){ const d=addDays(start,i); const inMonth=d.getMonth()===month; const dayEvents=sched.filter(t=>{const s=parse(t.computedStart), e=parse(t.computedEnd); return d>=s && d<e;}).slice(0,4); html+=`<div class="day" style="opacity:${inMonth?1:.45}"><div class="dnum">${d.getDate()}</div>${dayEvents.map(e=>`<div class="event ${e.computedStatus==='Done'?'done':e.computedStatus==='Late'?'late':''}">${e.id}: ${e.name}</div>`).join('')}</div>`; }
+ html+='</div>'; const grid=document.getElementById('calendarGrid'); if(grid)grid.innerHTML=html;
+}
+function renderTasks(){
+ const sched=getSchedule(); const phases=[...new Set(sched.map(t=>t.phase))];
+ document.getElementById('tasks').innerHTML=`<div class="card"><div class="sectionTitle"><h2 style="margin:0">Programme tasks</h2><div class="row"><button class="btn" onclick="addTask()">Add task</button><button class="btn secondary" onclick="render()">Recalculate</button></div></div><div class="notice">Edit progress, duration or status. The Calendar tab recalculates the remaining programme from your inputs.</div></div>${phases.map(phase=>{ const items=sched.filter(t=>t.phase===phase); const avg=items.reduce((a,t)=>a+Number(t.progress||0),0)/items.length; const cls=avg>=100?'done':items.some(t=>t.computedStatus==='Late')?'late':''; return `<div class="card phase ${cls}" style="margin-top:16px"><div class="sectionTitle"><h3 style="margin:0">${phase}</h3><span class="pill">${Math.round(avg)}%</span></div><div class="bar"><span style="width:${avg}%"></span></div><div style="overflow:auto;margin-top:12px"><table><thead><tr><th>ID</th><th>Task</th><th>Progress</th><th>Status</th><th>Duration</th><th>Dynamic dates</th><th>Owner</th><th>Notes</th><th></th></tr></thead><tbody>${items.map(t=>taskRow(t)).join('')}</tbody></table></div></div>`;}).join('')}`;
+}
+function taskRow(t){return `<tr><td>${t.id}</td><td><input value="${escapeHtml(t.name)}" onchange="updateTask('${t.id}','name',this.value)"></td><td><input type="number" min="0" max="100" value="${t.progress}" onchange="updateTask('${t.id}','progress',this.value)"></td><td><select onchange="updateTask('${t.id}','status',this.value)">${['Not started','In progress','Blocked','Approved','Done'].map(x=>`<option ${t.status===x?'selected':''}>${x}</option>`).join('')}</select></td><td><input type="number" min="1" value="${t.duration}" onchange="updateTask('${t.id}','duration',this.value)"></td><td><span class="small">${t.computedStart} → ${t.computedEnd}<br>${t.computedStatus}</span></td><td><input value="${escapeHtml(t.owner||'')}" onchange="updateTask('${t.id}','owner',this.value)"></td><td><textarea onchange="updateTask('${t.id}','notes',this.value)">${escapeHtml(t.notes||'')}</textarea></td><td><button class="btn danger" onclick="deleteTask('${t.id}')">Delete</button></td></tr>`;}
+function updateTask(id,key,val){const t=data.tasks.find(x=>x.id===id); if(!t)return; if(key==='progress')val=clamp(val,0,100); if(key==='duration')val=Math.max(1,Number(val)||1); if(key==='status'&&val==='Done')t.progress=100; t[key]=val; save(); renderTasks();}
+function addTask(){const id='T-'+String(Date.now()).slice(-5); data.tasks.push({id,phase:'Custom tasks',name:'New task',start:fmt(today()),duration:3,progress:0,status:'Not started',owner:'Local user',type:'Custom',notes:''}); save(); render(); setTab('tasks');}
+function deleteTask(id){if(confirm('Delete this task?')){data.tasks=data.tasks.filter(t=>t.id!==id); save(); render(); setTab('tasks');}}
+function renderIncome(){
+ const rows=data.income.map((x,i)=>`<tr><td><input type="date" value="${x.date}" onchange="data.income[${i}].date=this.value;save();renderIncome()"></td><td><input value="${escapeHtml(x.stream)}" onchange="data.income[${i}].stream=this.value;save();renderIncome()"></td><td><input type="number" value="${x.revenue}" onchange="data.income[${i}].revenue=Number(this.value)||0;save();renderIncome()"></td><td><input type="number" value="${x.cost}" onchange="data.income[${i}].cost=Number(this.value)||0;save();renderIncome()"></td><td><input value="${escapeHtml(x.notes||'')}" onchange="data.income[${i}].notes=this.value;save();renderIncome()"></td><td><button class="btn danger" onclick="data.income.splice(${i},1);save();renderIncome()">Delete</button></td></tr>`).join('');
+ const s=projectStats();
+ document.getElementById('income').innerHTML=`<div class="grid cols3"><div class="card"><div class="label">Revenue</div><div class="metric">${currency(s.revenue)}</div></div><div class="card"><div class="label">Costs</div><div class="metric">${currency(s.costs)}</div></div><div class="card"><div class="label">Profit</div><div class="metric">${currency(s.profit)}</div></div></div><div class="card" style="margin-top:16px"><div class="sectionTitle"><h2 style="margin:0">Income tracker</h2><button class="btn" onclick="addIncome()">Add entry</button></div><div style="overflow:auto"><table><thead><tr><th>Date</th><th>Stream</th><th>Revenue</th><th>Cost</th><th>Notes</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function addIncome(){data.income.push({date:fmt(today()),stream:'Digital templates',revenue:0,cost:0,notes:''});save();renderIncome();}
+function renderIdeas(){
+ const rows=[...data.ideas].map((i,idx)=>({...i,idx,score:scoreIdea(i)})).sort((a,b)=>b.score-a.score).map(i=>`<tr><td>${i.id}</td><td><input value="${escapeHtml(i.title)}" onchange="updateIdea(${i.idx},'title',this.value)"></td><td><input value="${escapeHtml(i.stream)}" onchange="updateIdea(${i.idx},'stream',this.value)"></td>${['buyerPain','competitionWeakness','productionSpeed','expertiseAdvantage','monetisation','platformRisk'].map(k=>`<td><input type="number" min="1" max="5" value="${i[k]}" onchange="updateIdea(${i.idx},'${k}',this.value)"></td>`).join('')}<td><b>${i.score}</b></td><td><select onchange="updateIdea(${i.idx},'status',this.value)">${['Research','Approved','Build','Published','Killed'].map(x=>`<option ${i.status===x?'selected':''}>${x}</option>`).join('')}</select></td><td><button class="btn danger" onclick="data.ideas.splice(${i.idx},1);save();renderIdeas()">Delete</button></td></tr>`).join('');
+ document.getElementById('ideas').innerHTML=`<div class="card"><div class="sectionTitle"><h2 style="margin:0">Opportunity scoring</h2><button class="btn" onclick="addIdea()">Add idea</button></div><div class="notice">Score 1–5. Higher is better except platform risk, where 1 is low risk and 5 is high risk. Final score uses the programme weighting.</div><div style="overflow:auto;margin-top:12px"><table><thead><tr><th>ID</th><th>Idea</th><th>Stream</th><th>Buyer pain</th><th>Weak competition</th><th>Speed</th><th>Expertise</th><th>Money</th><th>Risk</th><th>Score</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function updateIdea(idx,key,val){ if(['buyerPain','competitionWeakness','productionSpeed','expertiseAdvantage','monetisation','platformRisk'].includes(key))val=clamp(val,1,5); data.ideas[idx][key]=val; save(); renderIdeas();}
+function addIdea(){const id='I-'+String(data.ideas.length+1).padStart(3,'0');data.ideas.push({id,title:'New opportunity',stream:'Digital templates',buyerPain:3,competitionWeakness:3,productionSpeed:3,expertiseAdvantage:3,monetisation:3,platformRisk:2,status:'Research'});save();renderIdeas();}
+function renderContent(){
+ const rows=data.content.map((c,i)=>`<tr><td>${c.id}</td><td><input value="${escapeHtml(c.platform)}" onchange="data.content[${i}].platform=this.value;save();renderContent()"></td><td><input value="${escapeHtml(c.title)}" onchange="data.content[${i}].title=this.value;save();renderContent()"></td><td><select onchange="data.content[${i}].status=this.value;save();renderContent()">${['Idea','Draft','Needs approval','Approved','Scheduled','Published','Killed'].map(x=>`<option ${c.status===x?'selected':''}>${x}</option>`).join('')}</select></td><td><input type="date" value="${c.due}" onchange="data.content[${i}].due=this.value;save();renderContent()"></td><td><textarea onchange="data.content[${i}].notes=this.value;save();renderContent()">${escapeHtml(c.notes||'')}</textarea></td><td><button class="btn danger" onclick="data.content.splice(${i},1);save();renderContent()">Delete</button></td></tr>`).join('');
+ document.getElementById('content').innerHTML=`<div class="card"><div class="sectionTitle"><h2 style="margin:0">Content and product approval queue</h2><button class="btn" onclick="addContent()">Add item</button></div><div class="notice">Use this for YouTube loops, posts, UGC pitches, template listings, eBook sections and course scripts. Keep publishing approval-gated.</div><div style="overflow:auto;margin-top:12px"><table><thead><tr><th>ID</th><th>Platform</th><th>Title</th><th>Status</th><th>Due</th><th>Notes</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function addContent(){const id='C-'+String(data.content.length+1).padStart(3,'0');data.content.push({id,platform:'YouTube',title:'New content item',status:'Idea',due:fmt(addDays(today(),7)),notes:''});save();renderContent();}
+
+
+const CRYPTO_BRIDGE='http://127.0.0.1:8765';
+
+async function cryptoApi(path, options={}){
+  let res;
+  try{
+    res=await fetch(CRYPTO_BRIDGE+path,{
+      headers:{'Content-Type':'application/json'},
+      ...options
+    });
+  }catch(err){
+    if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+    data.crypto.minerStatus='Bridge offline';
+    data.crypto.lastUpdated=new Date().toISOString();
+    save();
+    data.crypto.lastError='NETWORK_ERROR: '+err.message;
+    throw new Error('The local bridge could not be reached. Run START_EVERYTHING.bat. Network detail: '+err.message);
+  }
+
+  let payload={};
+  try{ payload=await res.json(); }catch(_){}
+
+  if(!res.ok){
+    const problem=payload.result || payload.error || {};
+    const msg=problem.message || payload.message || (typeof payload.error==='string'?payload.error:'HTTP '+res.status);
+    const code=problem.code || 'HTTP_'+res.status;
+    throw new Error(code+': '+msg);
+  }
+  return payload;
+}
+
+async function syncCryptoStatus(){
+  try{
+    const r=await cryptoApi('/api/crypto/status');
+    if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+    data.crypto.bridgeOnline=!!r.bridge_online;
+    data.crypto.quickMinerRunning=!!r.quickminer_process_running;
+    data.crypto.excavatorRunning=!!r.excavator_process_running;
+    data.crypto.gpuMining=!!r.gpu_mining;
+    data.crypto.gpuDisabled=!!r.gpu_disabled;
+    data.crypto.enabled=!!r.gpu_mining;
+    data.crypto.miningState=r.mining_state||'ERROR';
+    data.crypto.minerStatus=data.crypto.miningState;
+    data.crypto.hashrate=r.hashrate;
+    data.crypto.gpuName=r.gpu_name||data.crypto.gpuName;
+    data.crypto.gpuTempC=r.gpu_temperature;
+    data.crypto.gpuPowerW=r.gpu_power;
+    data.crypto.gpuUtilPct=r.gpu_utilization;
+    data.crypto.grossRevenuePerDay=r.gross_revenue_per_day;
+    data.crypto.electricityCostPerDay=r.electricity_cost_per_day;
+    data.crypto.decisionProfitPerDay=r.decision_profit_per_day;
+    data.crypto.lastDecision=r.decision||'UNAVAILABLE';
+    data.crypto.profitabilityProvider=r.profitability_source||'nicehash_native';
+    data.crypto.lastError=r.last_error?(r.last_error.code+': '+r.last_error.message):null;
+    if(r.config){
+      if(typeof r.config.ignore_electricity_cost!=='undefined') data.crypto.ignoreElectricity=!!r.config.ignore_electricity_cost;
+      if(typeof r.config.minimum_profit_eur_per_day!=='undefined') data.crypto.minimumProfitPerDay=Number(r.config.minimum_profit_eur_per_day)||0;
+      if(typeof r.config.electricity_eur_per_kwh!=='undefined') data.crypto.electricityEurPerKwh=Number(r.config.electricity_eur_per_kwh)||0;
+      if(typeof r.config.max_gpu_temp_c!=='undefined') data.crypto.maxGpuTempC=Number(r.config.max_gpu_temp_c)||78;
+      if(typeof r.config.resume_gpu_temp_c!=='undefined') data.crypto.resumeGpuTempC=Number(r.config.resume_gpu_temp_c)||70;
+      if(typeof r.config.profitability_provider!=='undefined') data.crypto.profitabilityProvider=r.config.profitability_provider||'nicehash_native';
+    }
+    data.crypto.lastUpdated=r.last_update||new Date().toISOString();
+    save();
+    const cryptoTab=document.getElementById('crypto');
+    if(cryptoTab && cryptoTab.classList.contains('active')) renderCrypto();
+    return true;
+  }catch(err){
+    if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+    data.crypto.bridgeOnline=false;
+    data.crypto.lastError=err.message;
+    const cryptoTab=document.getElementById('crypto');
+    if(cryptoTab && cryptoTab.classList.contains('active')) renderCrypto();
+    return false;
+  }
+}
+
+async function pushCryptoConfig(){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+  const c=data.crypto;
+  try{
+    await cryptoApi('/api/crypto/config',{
+      method:'POST',
+      body:JSON.stringify({
+        ignore_electricity_cost:!!c.ignoreElectricity,
+        gross_revenue_eur_per_day:c.grossRevenuePerDay==null?null:Number(c.grossRevenuePerDay),
+        minimum_profit_eur_per_day:Number(c.minimumProfitPerDay)||0,
+        electricity_eur_per_kwh:Number(c.electricityEurPerKwh)||0,
+        max_gpu_temp_c:Number(c.maxGpuTempC)||78,
+        resume_gpu_temp_c:Number(c.resumeGpuTempC)||70,
+        profitability_provider:c.profitabilityProvider||'nicehash_native'
+      })
+    });
+    return true;
+  }catch(err){
+    return false;
+  }
+}
+
+async function refreshCryptoProfitability(){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+  data.crypto.profitabilityStatus='Refreshing…'; renderCrypto();
+  const ok=await syncCryptoStatus();
+  data.crypto.profitabilityStatus=ok?'NiceHash-native switching; earnings shown only when configured from a reliable source':'Refresh failed: '+(data.crypto.lastError||'unknown error');
+  save(); renderCrypto();
+}
+async function setProfitProvider(provider){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto); data.crypto.profitabilityProvider='nicehash_native'; save();
+  renderCrypto(); await refreshCryptoProfitability();
+}
+
+function cryptoDecision(){
+  const c=data.crypto||{};
+  const gross=c.grossRevenuePerDay==null?null:Number(c.grossRevenuePerDay);
+  const watts=Number(c.gpuPowerW||c.assumedPowerW||0);
+  const rate=Number(c.electricityEurPerKwh||0);
+  const electricity=c.electricityCostPerDay==null?(watts/1000)*24*rate:Number(c.electricityCostPerDay);
+  const decisionProfit=gross==null?null:(c.ignoreElectricity?gross:gross-electricity);
+  const threshold=Number(c.minimumProfitPerDay||0);
+  const temp=Number(c.gpuTempC);
+  const thermalOk=!Number.isFinite(temp)||temp<Number(c.maxGpuTempC||78);
+  const profitable=decisionProfit==null?null:decisionProfit>=threshold;
+  return {gross,electricity,decisionProfit,threshold,thermalOk,profitable,watts};
+}
+function optionalCurrency(value){return value==null||!Number.isFinite(Number(value))?'Unavailable':currency(Number(value));}
+function optionalValue(value,suffix=''){return value==null||value===''?'Unavailable':escapeHtml(String(value))+suffix;}
+async function updateCrypto(key,val){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+  const numeric=['grossRevenuePerDay','electricityEurPerKwh','assumedPowerW','minimumProfitPerDay','maxGpuTempC','resumeGpuTempC'];
+  if(key==='grossRevenuePerDay'&&String(val).trim()==='') val=null;
+  else if(numeric.includes(key)) val=Number(val)||0;
+  data.crypto[key]=val;
+  save();
+  await pushCryptoConfig();
+  renderCrypto();
+}
+async function toggleCryptoBool(key,val){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+  data.crypto[key]=!!val;
+  save();
+  await pushCryptoConfig();
+  renderCrypto();
+}
+async function cryptoCommand(action){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+  try{
+    data.crypto.minerStatus=action==='start'?'Starting…':'Stopping…';
+    renderCrypto();
+
+    const r=await cryptoApi('/api/crypto/'+action,{
+      method:'POST',
+      body:'{}'
+    });
+
+    if(r.status){
+      data.crypto.enabled=!!r.status.gpu_mining;
+      data.crypto.minerStatus=r.status.mining_state||'ERROR';
+      data.crypto.lastError=r.status.last_error?(r.status.last_error.code+': '+r.status.last_error.message):null;
+    }
+    data.crypto.lastUpdated=new Date().toISOString();
+    save();
+    await syncCryptoStatus();
+  }catch(err){
+    data.crypto.minerStatus=action==='start'?'ERROR':'STOPPING';
+    data.crypto.lastError=err.message;
+    data.crypto.lastUpdated=new Date().toISOString();
+    save();
+    renderCrypto();
+    alert((action==='start'?'Start Mining failed: ':'Stop Mining failed: ') + err.message);
+  }
+}
+function addCryptoIncome(){
+  const c=data.crypto||{};
+  const d=cryptoDecision();
+  const revenue=Math.max(0,Number(d.gross||0));
+  const cost=c.ignoreElectricity?0:Math.max(0,Number(d.electricity||0));
+  data.income.push({
+    date:fmt(today()),
+    stream:'Crypto mining',
+    revenue:Number(revenue.toFixed(2)),
+    cost:Number(cost.toFixed(2)),
+    notes:`Dashboard estimate; ${c.ignoreElectricity?'electricity ignored in decision':'electricity included'}`
+  });
+  save(); render(); setTab('income');
+}
+function renderCrypto(){
+  if(!data.crypto)data.crypto=structuredClone(defaultData.crypto);
+  const c=data.crypto, d=cryptoDecision();
+  const statusClass=c.gpuMining?'accent':'';
+  document.getElementById('crypto').innerHTML=`
+  <div class="grid cols4">
+    <div class="card"><div class="label">Mining state</div><div class="metric ${statusClass}">${escapeHtml(c.miningState||c.minerStatus||'OFFLINE')}</div><div class="small">Active hashing: ${c.gpuMining?'Yes':'No'}</div></div>
+    <div class="card"><div class="label">Hashrate</div><div class="metric">${optionalValue(c.hashrate)}</div><div class="small">Positive Excavator speed is required for MINING</div></div>
+    <div class="card"><div class="label">Decision profit/day</div><div class="metric">${optionalCurrency(c.decisionProfitPerDay)}</div><div class="small">Gross ${optionalCurrency(c.grossRevenuePerDay)} • Electricity ${optionalCurrency(c.electricityCostPerDay)}</div></div>
+    <div class="card"><div class="label">GPU</div><div class="metric" style="font-size:20px">${escapeHtml(c.gpuName||'Unknown')}</div><div class="small">${optionalValue(c.gpuTempC,'°C')} • ${optionalValue(c.gpuPowerW,' W')} • ${optionalValue(c.gpuUtilPct,'%')}</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="sectionTitle"><h2 style="margin:0">Live component status</h2><button class="btn secondary" onclick="syncCryptoStatus()">Refresh</button></div>
+    <table><tbody>
+      <tr><td>Bridge</td><td><b>${c.bridgeOnline?'Online':'Offline'}</b></td><td>QuickMiner</td><td><b>${c.quickMinerRunning?'Running':'Stopped'}</b></td></tr>
+      <tr><td>Excavator</td><td><b>${c.excavatorRunning?'Running':'Stopped'}</b></td><td>GPU</td><td><b>${c.gpuDisabled?'Disabled':(c.gpuName||'Unavailable')}</b></td></tr>
+      <tr><td>Mining state</td><td><b>${escapeHtml(c.miningState||'OFFLINE')}</b></td><td>Hashrate</td><td><b>${optionalValue(c.hashrate)}</b></td></tr>
+      <tr><td>Temperature</td><td><b>${optionalValue(c.gpuTempC,'°C')}</b></td><td>Power / utilization</td><td><b>${optionalValue(c.gpuPowerW,' W')} / ${optionalValue(c.gpuUtilPct,'%')}</b></td></tr>
+      <tr><td>Profitability source</td><td><b>${escapeHtml(c.profitabilityProvider||'nicehash_native')}</b></td><td>Last update</td><td><b>${c.lastUpdated?new Date(c.lastUpdated).toLocaleString('en-IE'):'Never'}</b></td></tr>
+      <tr><td>Last error</td><td colspan="3"><b>${escapeHtml(c.lastError||'None')}</b></td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="grid cols2" style="margin-top:16px">
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Automatic profitability</h2><button class="btn secondary" onclick="refreshCryptoProfitability()">Refresh now</button></div>
+      <label class="label">Provider</label>
+      <select onchange="setProfitProvider(this.value)">
+        <option value="nicehash_native" ${c.profitabilityProvider==='nicehash_native'?'selected':''}>NiceHash native switching</option>
+      </select>
+      <div class="ideaCard" style="margin-top:12px">
+        <div class="small">Status</div><b>${escapeHtml(c.profitabilityStatus||'Not refreshed')}</b>
+        <div class="small" style="margin-top:10px">Best current option</div>
+        <div style="font-size:20px;font-weight:800">${escapeHtml(c.bestCoin||'NiceHash auto-switch')}</div>
+        <div class="small">${escapeHtml(c.bestAlgorithm||'Miner selects the best benchmarked algorithm')}</div>
+        <div class="metric" style="font-size:26px">${optionalCurrency(c.grossRevenuePerDay)}/day</div>
+        <div class="small">Updated: ${c.profitabilityUpdated?new Date(c.profitabilityUpdated).toLocaleString("en-IE"):'—'}</div>
+      </div>
+      <div class="notice" style="margin-top:12px">NiceHash Miner/QuickMiner performs the actual benchmark-based algorithm switching. The dashboard controls whether mining is allowed and records the current profitability signal.</div>
+    </div>
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Top ranked coins / algorithms</h2></div>
+      ${Array.isArray(c.profitabilityRows)&&c.profitabilityRows.length?`<div style="overflow:auto"><table><thead><tr><th>Rank</th><th>Coin</th><th>Algorithm</th><th>Gross/day</th><th>Profit/day</th></tr></thead><tbody>${c.profitabilityRows.slice(0,8).map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.coin||'')}</td><td>${escapeHtml(r.algorithm||'')}</td><td>${currency(r.gross_eur_day||0)}</td><td>${currency(r.profit_eur_day||0)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="notice">No external coin ranking loaded. NiceHash can still auto-switch internally using its own benchmarks and live algorithm profitability.</div>'}
+    </div>
+  </div>
+
+  <div class="grid cols2" style="margin-top:16px">
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Mining controls</h2><div class="row"><span class="pill">${c.lastDecision}</span><span class="pill">${escapeHtml(c.minerStatus||"Unknown")}</span></div></div>
+      <div class="row">
+        <button class="btn" onclick="cryptoCommand('start')">Start Mining</button>
+        <button class="btn danger" onclick="cryptoCommand('stop')">Stop Mining</button>
+        <button class="btn secondary" onclick="syncCryptoStatus()">Refresh</button>
+        <button class="btn secondary" onclick="addCryptoIncome()">Log today's estimate</button>
+      </div>
+      <div class="checklist" style="margin-top:14px">
+        <label><input type="checkbox" ${c.ignoreElectricity?'checked':''} onchange="toggleCryptoBool('ignoreElectricity',this.checked)"><span><b>Ignore electricity cost</b><br><span class="small">When enabled, mining decisions use gross revenue only. Estimated power cost remains visible.</span></span></label>
+        <label><input type="checkbox" ${c.autoIncomeLogging?'checked':''} onchange="toggleCryptoBool('autoIncomeLogging',this.checked)"><span><b>Auto income logging</b><br><span class="small">The companion bridge can post actual daily payout records into the Income stream.</span></span></label>
+      </div>
+      <div class="notice" style="margin-top:14px">Live bridge: <b>${CRYPTO_BRIDGE}</b><br>Last status update: ${c.lastUpdated?new Date(c.lastUpdated).toLocaleString("en-IE"):"Never"}<br>The dashboard sends Start/Stop/config commands directly to the localhost bridge and polls live GPU status.<br><b>Normal startup: double-click START_EVERYTHING.bat only.</b></div>
+    </div>
+
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Profit settings</h2></div>
+      <label class="label">Expected gross revenue (€ / day)</label>
+      <input type="number" step="0.01" placeholder="Unavailable" value="${c.grossRevenuePerDay==null?'':c.grossRevenuePerDay}" onchange="updateCrypto('grossRevenuePerDay',this.value)">
+      <label class="label">Minimum required profit (€ / day)</label>
+      <input type="number" step="0.01" value="${c.minimumProfitPerDay}" onchange="updateCrypto('minimumProfitPerDay',this.value)">
+      <label class="label">Electricity (€ / kWh)</label>
+      <input type="number" step="0.001" value="${c.electricityEurPerKwh}" onchange="updateCrypto('electricityEurPerKwh',this.value)">
+      <label class="label">Assumed mining power (W)</label>
+      <input type="number" step="1" value="${c.assumedPowerW}" onchange="updateCrypto('assumedPowerW',this.value)">
+    </div>
+  </div>
+
+  <div class="grid cols2" style="margin-top:16px">
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Thermal guardrails</h2></div>
+      <label class="label">Stop at GPU temperature (°C)</label>
+      <input type="number" step="1" value="${c.maxGpuTempC}" onchange="updateCrypto('maxGpuTempC',this.value)">
+      <label class="label">Resume at GPU temperature (°C)</label>
+      <input type="number" step="1" value="${c.resumeGpuTempC}" onchange="updateCrypto('resumeGpuTempC',this.value)">
+    </div>
+    <div class="card">
+      <div class="sectionTitle"><h2 style="margin:0">Decision breakdown</h2></div>
+      <table><tbody>
+        <tr><td>Gross revenue/day</td><td><b>${optionalCurrency(d.gross)}</b></td></tr>
+        <tr><td>Estimated electricity/day</td><td><b>${optionalCurrency(d.electricity)}</b></td></tr>
+        <tr><td>Electricity used in decision</td><td><b>${c.ignoreElectricity?'No':'Yes'}</b></td></tr>
+        <tr><td>Decision profit/day</td><td><b>${optionalCurrency(d.decisionProfit)}</b></td></tr>
+        <tr><td>Profit threshold met</td><td><b>${d.profitable==null?'Unavailable':(d.profitable?'Yes':'No')}</b></td></tr>
+        <tr><td>Thermal condition OK</td><td><b>${d.thermalOk?'Yes':'No'}</b></td></tr>
+      </tbody></table>
+    </div>
+  </div>`;
+}
+
+function renderSettings(){
+ document.getElementById('settings').innerHTML=`<div class="grid cols2"><div class="card"><div class="sectionTitle"><h2 style="margin:0">Project settings</h2></div>${field('Project name','meta','projectName')} ${field('Owner','meta','owner')} ${field('Start date','meta','startDate','date')} ${field('Monthly target','meta','monthlyTarget','number')} ${field('Approval cadence','meta','approvalCadence')}<label class="label">Work intensity</label><input type="number" min="0.25" max="3" step="0.25" value="${data.meta.workIntensity}" onchange="data.meta.workIntensity=Number(this.value)||1;save();render()"><p class="small">0.5 = slower, 1 = normal, 2 = sprint mode.</p></div><div class="card"><div class="sectionTitle"><h2 style="margin:0">Filled brief notes</h2></div>${briefField('Target monthly income','targetMonthlyIncome')} ${briefField('Target deadline','targetDeadline')} ${briefField('Starting budget','startingBudget')} ${briefField('Weekly hours','weeklyHours')} ${briefField('Risk level','riskLevel')}<label class="label">Preferred niches</label><textarea onchange="data.brief.niches=this.value;save()">${escapeHtml(data.brief.niches)}</textarea><label class="label">Hard rules</label><textarea onchange="data.brief.hardRules=this.value;save()">${escapeHtml(data.brief.hardRules)}</textarea><label class="label">Notes</label><textarea onchange="data.brief.notes=this.value;save()">${escapeHtml(data.brief.notes)}</textarea></div></div><div class="card" style="margin-top:16px"><div class="sectionTitle"><h2 style="margin:0">Backup / restore</h2></div><div class="row"><button class="btn" onclick="exportData()">Export JSON backup</button><label class="btn secondary" for="importFile">Import JSON backup</label><input id="importFile" type="file" accept="application/json" class="hidden" onchange="importData(event)"><button class="btn warn" onclick="resetData()">Reset to default</button></div><p class="small">Because this is a local HTML app, the safest workflow is to export a JSON backup after each weekly review.</p></div>`;
+}
+function field(label,obj,key,type='text'){return `<label class="label">${label}</label><input type="${type}" value="${escapeHtml(String(data[obj][key]??''))}" onchange="data.${obj}.${key}=this.type==='number'?Number(this.value):this.value;save();render()">`}
+function briefField(label,key,type='text'){return `<label class="label">${label}</label><input type="${type}" value="${escapeHtml(String(data.brief[key]??''))}" onchange="data.brief.${key}=this.value;save()">`}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ai-passive-income-dashboard-backup-'+fmt(today())+'.json';a.click();URL.revokeObjectURL(a.href);}
+function importData(e){const f=e.target.files[0]; if(!f)return; const reader=new FileReader(); reader.onload=()=>{try{const imported=JSON.parse(reader.result); data=imported; save(); render(); alert('Backup imported.');}catch(err){alert('Import failed: '+err.message)}}; reader.readAsText(f);}
+function escapeHtml(str){return String(str).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function render(){renderTabs();renderDashboard();renderCalendar();renderTasks();renderIncome();renderIdeas();renderContent();renderCrypto();renderSettings();}
+render();
+setInterval(syncCryptoStatus,5000);
+setTimeout(syncCryptoStatus,700);
+setTimeout(refreshCryptoProfitability,1800);
+setInterval(refreshCryptoProfitability,600000);
+</script>
+</body>
+</html>
+

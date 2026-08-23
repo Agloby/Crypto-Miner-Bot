@@ -1,0 +1,27 @@
+# Generated machine-specific configuration
+config/runtime.json
+config/*.tmp
+
+# Local logs and state
+logs/
+*.log
+profitability.json
+
+# Python caches and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editors / operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Codex scratch/deliverable folders
+work/
+outputs/
+

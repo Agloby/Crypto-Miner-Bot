@@ -1,0 +1,15 @@
+{
+  "miner_path": "",
+  "miner_working_dir": "",
+  "miner_args": [],
+  "gpu_match_name": "RTX 2070 SUPER",
+  "ignore_electricity_cost": false,
+  "electricity_eur_per_kwh": 0.0,
+  "gross_revenue_eur_per_day": null,
+  "minimum_profit_eur_per_day": 0.0,
+  "profitability_provider": "nicehash_native",
+  "max_gpu_temp_c": 78,
+  "resume_gpu_temp_c": 70,
+  "auto_resume_after_thermal_stop": false
+}
+
